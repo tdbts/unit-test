@@ -1,0 +1,12 @@
+#!/bin/bash
+
+function unit_test() {
+	echo "Currently testing $(basename "$PWD")"
+	module=$(basename "$PWD")
+	cwd=$(pwd)
+	pj=$(x=`pwd`; while [ "$x" != "/" ] ; do x=`dirname "$x"`; find "$x" -maxdepth 1 -name package.json; done)
+	cd $(dirname $pj)
+	pth=$(find . -name $module -type d ! -path './node_modules/*')
+	find $pth -maxdepth 1 -name test -type d ! -path './node_modules/*' -exec mocha {} --compilers js:babel-core/register --require babel-polyfill --recursive ';' -quit
+	cd $cwd
+}
